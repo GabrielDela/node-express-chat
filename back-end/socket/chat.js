@@ -34,7 +34,7 @@ module.exports = function (io) {
       socket.emit('connected', { client_uuid: data.client_uuid, username: data.username, channel: 'Global', channel_name: 'Global' });
       io.to('Global').emit('users', users);
 
-      sMessage.find({ 'receiver': 'Global'}).then(data => {
+      sMessage.find({ 'receiver': 'Global' }).then(data => {
         socket.emit('init', data);
       });
     });
@@ -53,13 +53,13 @@ module.exports = function (io) {
     });
 
     socket.on('channel_change', channel => {
-      if(channel != 'Global'){
-        sMessage.find({ $or:[ {'sender': socket.client_uuid, receiver: channel}, {'receiver': socket.client_uuid, 'sender': channel} ]}).then(data => {
+      if (channel != 'Global') {
+        sMessage.find({ $or: [{ 'sender': socket.client_uuid, receiver: channel }, { 'receiver': socket.client_uuid, 'sender': channel }] }).then(data => {
           socket.emit('channel_changed', data);
         });
       }
-      else{
-        sMessage.find({ 'receiver': 'Global'}).then(data => {
+      else {
+        sMessage.find({ 'receiver': 'Global' }).then(data => {
           socket.emit('channel_changed', data);
         });
       }
@@ -68,7 +68,7 @@ module.exports = function (io) {
     socket.on('message', data => {
       const user = users.find(element => element.client_uuid == data.channel);
 
-      var message = { sender: socket.client_uuid, receiver: data.channel, username: socket.username, message: data.message};
+      var message = { sender: socket.client_uuid, receiver: data.channel, username: socket.username, message: data.message };
       var data = new sMessage(message);
 
       data.save(function (err, message) {
@@ -81,6 +81,12 @@ module.exports = function (io) {
         else {
           io.to('Global').emit('message', message);
         }
+      });
+    });
+
+    socket.on('nbMessages', client_uuid => {
+      sMessage.count({ sender: client_uuid }).then(count => {
+        socket.emit('nbMessages', count);
       });
     });
   })

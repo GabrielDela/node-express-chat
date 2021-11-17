@@ -67,7 +67,7 @@
 									<circle cx="5" cy="5" r="5" fill="currentColor"></circle>
 								</svg>
 							</span>
-							<span id="nbMessage" class="text-gray-700 mr-3 mx-4"></span>
+							<span id="nbMessage" class="text-gray-700 text-base mr-3 mx-4"></span>
 						</div>
 						<span id="nbUsers" class="text-lg text-gray-600"></span>
 					</div>
@@ -122,10 +122,15 @@
 				</div>
 			</div>
 			<div class="flex flex-row bg-gray-100 border-t-2 border-solid px-12 py-2">
-				<div id="usernameText" class="py-4 m-auto">
-					Connecté en tant que : John Doe
+				<div class="py-4 m-auto">
+					<div id="usernameText">
+						Connecté en tant que : John Doe
+					</div>
+					<div id="nbMessagesUser">
+						Vous avez envoyer 35 messages
+					</div>
 				</div>
-				<div class="flex md:hidden bg-blue-600 h-12 w-12 rounded cursor-pointer hover:bg-blue-700 transition"
+				<div class="m-auto flex md:hidden bg-blue-600 h-12 w-12 rounded cursor-pointer hover:bg-blue-700 transition"
 					onclick="leave();">
 					<i class="fa fa-sign-out m-auto text-white" style="font-size: 30px;" aria-hidden="true"></i>
 				</div>
@@ -178,13 +183,15 @@
 		var usernameText = document.getElementById('usernameText');
 		var nbUsers = document.getElementById('nbUsers');
 		var nbMessage = document.getElementById('nbMessage');
+		var nbMessagesUser = document.getElementById('nbMessagesUser')
 
 		var send = document.getElementById('send');
 		var message = document.getElementById('message');
 
 		var userList = document.getElementById('userList');
+		var countMessage = 0;
 
-		const messageList = document.getElementById('messages')
+		const messageList = document.getElementById('messages');
 
 		document.getElementById('connectionForm').addEventListener('submit', (e) => {
 			e.preventDefault();
@@ -202,6 +209,12 @@
 		send.addEventListener('click', (e) => {
 			socket.emit('message', { message: message.value, channel: channel, channel_name: channel_name });
 			message.value = null;
+
+			socket.emit('nbMessages', client_uuid);
+		});
+
+		socket.on('nbMessages', nbMessages => {
+			nbMessagesUser.innerText = "Vous avez envoyer " + nbMessages + " messages.";
 		});
 
 		socket.on('connected', (data) => {
@@ -244,6 +257,14 @@
 		});
 
 		function changeChannel(p_channel, p_channel_name) {
+
+			if (openedMenu) {
+				console.log('tstees')
+				openedMenu = !openedMenu;
+				users.classList.remove('left-0');
+				users.classList.add('left-full');
+			}
+
 			channel = p_channel;
 			channel_name = p_channel_name;
 
@@ -258,7 +279,9 @@
 				addMessage(element);
 			});
 
-			nbMessage.innerText = data.length;
+			countMessage = data.length;
+
+			nbMessage.innerText = "(" + countMessage + " messages)";
 
 			messageList.scrollTop = messageList.scrollHeight;
 		});
@@ -266,28 +289,37 @@
 		socket.on('private_message', message => {
 			if (channel == message.sender || client_uuid == message.sender) {
 				addMessage(message);
-				nbMessage.innerText = parseInt(nbMessage.innerText) + 1;
+				countMessage++;
+				nbMessage.innerText = "(" + countMessage + " messages)";
 			}
 			else {
 				document.getElementById(message.sender).classList.add('bg-red-100');
 			}
 			messageList.scrollTop = messageList.scrollHeight;
+
+			socket.emit('nbMessages', client_uuid);
 		});
 
 		socket.on('init', data => {
 			data.forEach(element => {
 				addMessage(element);
 			});
-			nbMessage.innerText = data.length;
+			countMessage = data.length;
+			nbMessage.innerText = "(" + countMessage + " messages)";
 			messageList.scrollTop = messageList.scrollHeight;
+
+			socket.emit('nbMessages', client_uuid);
 		});
 
 		socket.on('message', message => {
 			if (channel == message.sender || client_uuid == message.sender) {
 				addMessage(message);
-				nbMessage.innerText = parseInt(nbMessage.innerText) + 1;
+				countMessage++;
+				nbMessage.innerText = "(" + countMessage + " messages)";
 				messageList.scrollTop = messageList.scrollHeight;
 			}
+
+			socket.emit('nbMessages', client_uuid);
 		});
 
 		function addMessage(data) {
