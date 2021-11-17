@@ -7,8 +7,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Node chat</title>
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="normalise.css">
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"
 		integrity="sha512-N5JbZMETkl+0SZh5l8OA2VxSfF120owfQyy54iAXTJIKuqAn3A9TrNz1ypB55o8aSU5MxaodEgv74wGUvgUynQ=="
 		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -20,101 +22,345 @@
     HTML/CSS implementation of HipChat redesign
     Source: https://codepen.io/CucuIonel/pen/HzLtC
     -->
-	<div class="window-wrapper">
-		<div class="window-title">
-			<div class="dots">
-				<i class="fa fa-circle"></i>
-				<i class="fa fa-circle"></i>
-				<i class="fa fa-circle"></i>
-			</div>
-			<div class="title">
-				<span>RIL - CHAT</span>
-			</div>
-			<div class="expand">
-				<i class="fa fa-expand"></i>
-			</div>
-		</div>
-		<div class="window-area">
-			<div class="conversation-list">
-				<ul class="">
-					<li class="item"><a href="#"><i class="fa fa-list-alt"></i><span>Dashboard</span></a></li>
-					<li class="item active">
-						<a href="#">
-							<i class="fa fa-user"></i>
-							<span>Team chat</span>
-							<i class="fa fa-times"></i>
-						</a>
-					</li>
-				</ul>
-				<div class="my-account">
-					<div class="image">
-						<img src="https://thispersondoesnotexist.com/image">
-						<i class="fa fa-circle online"></i>
-					</div>
-					<div class="name">
-						<span>John Doe</span>
-						<i class="fa fa-angle-down"></i>
-						<span class="availability">Available</span>
-					</div>
+	<div id="connectionPage" class="flex bg-gray-400" style="height: 100vh;">
+		<div class="flex container mx-auto">
+			<div class="w-full sm:w-4/5 flex justify-center m-auto px-6">
 
-				</div>
-			</div>
-			<div class="chat-area">
-				<div class="title"><b>Conversation title</b><i class="fa fa-search"></i></div>
-				<div class="chat-list">
-					<ul>
-						<li class="me">
-							<div class="name">
-								<span class="">John Doe</span>
+				<div class="w-full xl:w-3/4 lg:w-11/12 flex">
+
+					<div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg"
+						style="background-image: url('https://source.unsplash.com/K4mSJ7kc0As/600x800')"></div>
+
+					<div class="w-full lg:w-1/2 bg-white p-5 rounded-lg lg:rounded-l-none">
+						<h3 class="pt-4 text-2xl text-center">Chat.io</h3>
+						<form id="connectionForm" class="px-8 pt-6 pb-8 mb-4 bg-white rounded">
+							<div class="my-10">
+								<label class="block mb-2 text-sm font-bold text-gray-700" for="username">
+									Pseudonyme
+								</label>
+								<input
+									class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+									id="username" type="text" placeholder="Username" />
 							</div>
-							<div class="message">
-								<p>Hello</p>
-								<span class="msg-time">5:00 pm</span>
+							<div class="mt-10 text-center">
+								<input
+									class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+									type="submit" value="Se connecter">
+								</input>
 							</div>
-						</li>
-						<li class="">
-							<div class="name">
-								<span class="">Christian Smith</span>
-							</div>
-							<div class="message">
-								<p>World</p>
-								<span class="msg-time">5:01 pm</span>
-							</div>
-						</li>
-					</ul>
-				</div>
-				<div class="input-area">
-					<div class="input-wrapper">
-						<input type="text" value="" placeholder="Message here">
-						<i class="fa fa-smile-o"></i>
+						</form>
 					</div>
-					<input type="button" value="Submit" class="send-btn">
 				</div>
-			</div>
-			<div class="right-tabs">
-				<ul class="tabs">
-					<li class="active">
-						<a href="#"><i class="fa fa-users"></i></a>
-					</li>
-					<li><a href="#"><i class="fa fa-paperclip"></i></a></li>
-					<li><a href="#"><i class="fa fa-link"></i></a></li>
-				</ul>
-				<ul class="tabs-container">
-					<li class="active">
-						<ul class="member-list">
-							<li><span class="status online"><i class="fa fa-circle-o"></i></span><span>John Doe</span>
-							</li>
-							<li><span class="status online"><i class="fa fa-circle-o"></i></span><span>Christian
-									Smith</span></li>
-						</ul>
-					</li>
-					<li></li>
-					<li></li>
-				</ul>
-				<i class="fa fa-cog"></i>
 			</div>
 		</div>
 	</div>
+
+	<div id="tchatPage" class="hidden justify-between flex flex-row h-screen">
+		<div id="tchat" class="justify-between flex flex-col h-screen w-full md:w-2/3">
+			<div class="flex md:items-center px-6 md:px-12 justify-between py-3 border-b-2 border-gray-200">
+				<div class="w-full flex items-center space-x-4">
+					<div class="flex mr-auto flex-col leading-tight">
+						<div class="text-2xl mt-1 flex items-center">
+							<span id="channelName" class="text-gray-700 mr-3"></span>
+							<span class="text-green-500">
+								<svg width="10" height="10">
+									<circle cx="5" cy="5" r="5" fill="currentColor"></circle>
+								</svg>
+							</span>
+							<span id="nbMessage" class="text-gray-700 mr-3 mx-4"></span>
+						</div>
+						<span id="nbUsers" class="text-lg text-gray-600"></span>
+					</div>
+					<div class="flex items-center space-x-2 ml-auto">
+						<div class="hidden md:flex bg-blue-600 h-12 w-12 rounded cursor-pointer hover:bg-blue-700 transition"
+							onclick="leave();">
+							<i class="fa fa-sign-out m-auto text-white" style="font-size: 30px;" aria-hidden="true"></i>
+						</div>
+						<div class="flex md:hidden bg-blue-600 h-12 w-12 rounded cursor-pointer hover:bg-blue-700 transition"
+							onclick="menu();">
+							<i class="fa fa-bars m-auto text-white" style="font-size: 30px;" aria-hidden="true"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="messages"
+				class="w-full flex flex-col mx-auto p-3 pb-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+			</div>
+
+			<div class="border-t-2 border-gray-200 px-4 py-4 mb-2 md:mb-0">
+				<form action="#" class="mx-auto relative flex">
+					<input id="message" type="text" placeholder="Écrivez votre message ..."
+						class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-6 bg-gray-200 rounded-full py-3">
+					<div class="absolute right-0 items-center inset-y-0 flex">
+						<button id="send" type="submit"
+							class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+								class="h-6 w-6 transform rotate-90">
+								<path
+									d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
+								</path>
+							</svg>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="users"
+			class="fixed top-0 left-full md:static flex flex-col w-full md:w-1/3 bg-gray-50 md:border-l-4 md:border-solid h-screen transition">
+			<div class="flex px-12 py-8" style="letter-spacing: 3px;">
+				<div class="flex md:hidden bg-blue-600 h-10 w-10 rounded cursor-pointer hover:bg-blue-700 transition"
+					onclick="menu();">
+					<i class="fa fa-arrow-circle-o-left m-auto text-white p-2" style="font-size: 24px;"
+						aria-hidden="true"></i>
+				</div>
+				<h2 class="m-auto px-4">Liste des utilisateurs connectés</h2>
+			</div>
+			<div
+				class="h-full flex flex-col overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+				<div id="userList">
+				</div>
+			</div>
+			<div class="flex flex-row bg-gray-100 border-t-2 border-solid px-12 py-2">
+				<div id="usernameText" class="py-4 m-auto">
+					Connecté en tant que : John Doe
+				</div>
+				<div class="flex md:hidden bg-blue-600 h-12 w-12 rounded cursor-pointer hover:bg-blue-700 transition"
+					onclick="leave();">
+					<i class="fa fa-sign-out m-auto text-white" style="font-size: 30px;" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.scrollbar-w-2::-webkit-scrollbar {
+			width: 10px;
+			height: 0.25rem;
+		}
+
+		.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+			--bg-opacity: 1;
+			background-color: #f7fafc;
+			background-color: rgba(247, 250, 252, var(--bg-opacity));
+		}
+
+		.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+			--bg-opacity: 1;
+			background-color: #edf2f7;
+			background-color: rgba(237, 242, 247, var(--bg-opacity));
+		}
+
+		.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+			border-radius: 0.25rem;
+		}
+
+		.chat-message {
+			margin-bottom: 10px;
+		}
+	</style>
+
+	<script>
+		const socket = io('127.0.0.1:3000');
+		var channel;
+		var channel_name;
+
+		var client_uuid = localStorage.getItem('client_uuid');
+		if (client_uuid == null) {
+			localStorage.setItem('client_uuid', makeid(50));
+			client_uuid = localStorage.getItem('client_uuid');
+		};
+
+		var tchatPage = document.getElementById('tchatPage');
+		var connectionPage = document.getElementById('connectionPage');
+
+		var channelName = document.getElementById('channelName');
+		var usernameText = document.getElementById('usernameText');
+		var nbUsers = document.getElementById('nbUsers');
+		var nbMessage = document.getElementById('nbMessage');
+
+		var send = document.getElementById('send');
+		var message = document.getElementById('message');
+
+		var userList = document.getElementById('userList');
+
+		const messageList = document.getElementById('messages')
+
+		document.getElementById('connectionForm').addEventListener('submit', (e) => {
+			e.preventDefault();
+			var username = document.getElementById('username').value;
+			document.getElementById('username').value = "";
+			if (username.length < 150 && username != "") {
+				socket.emit('login', { client_uuid: client_uuid, username: username });
+				usernameText.innerText = "Connecté en tant que : " + username;
+			}
+			else {
+				alert('Veuillez entrer un pseudonyme.')
+			}
+		});
+
+		send.addEventListener('click', (e) => {
+			socket.emit('message', { message: message.value, channel: channel, channel_name: channel_name });
+			message.value = null;
+		});
+
+		socket.on('connected', (data) => {
+			tchatPage.classList.remove('hidden');
+			connectionPage.classList.add('hidden');
+			channel = data.channel;
+			channel_name = data.channel_name;
+			channelName.innerText = "Tchat " + channel_name;
+			messageList.scrollTop = messageList.scrollHeight;
+		});
+
+		socket.on('users', users => {
+			nbUsers.innerText = users.length > 1 ? users.length + " utilisateurs connectés" : users.length + " utilisateur connecté";
+
+			userList.innerHTML = "";
+			userList.innerHTML += `<div id="Global" onclick="changeChannel('Global', 'Global');" class="flex bg-gray-50 hover:bg-gray-100 transition text-md px-12 py-4 cursor-pointer"><span class="text-green-500 my-auto"><svg width="10" height="10"><circle cx="5" cy="5" r="5" fill="currentColor"></circle></svg></span><div class="m-auto mx-4">Global</div></div>`
+			users.forEach(element => {
+				if (element.client_uuid != client_uuid) {
+					let div1 = document.createElement('div');
+					div1.classList = "flex bg-gray-50 hover:bg-gray-100 transition text-md px-12 py-4 cursor-pointer";
+					div1.id = element.client_uuid;
+					div1.name = element.username;
+					// let span1 = document.createElement('<span class="text-green-500 my-auto"><svg width="10" height="10"><circle cx="5" cy="5" r="5" fill="currentColor"></circle></svg></span>');
+					let div2 = document.createElement('div');
+					div2.classList = "m-auto mx-4";
+					div2.innerText = element.username;
+
+					div1.innerHTML += '<span class="text-green-500 my-auto"><svg width="10" height="10"><circle cx="5" cy="5" r="5" fill="currentColor"></circle></svg></span>';
+					// div.appendChild(span1);
+					div1.appendChild(div2);
+
+
+					div1.addEventListener('click', (e) => {
+						changeChannel(div1.id, div1.name);
+						div1.classList.remove('bg-red-100');
+					});
+					userList.appendChild(div1);
+				}
+			});
+		});
+
+		function changeChannel(p_channel, p_channel_name) {
+			channel = p_channel;
+			channel_name = p_channel_name;
+
+			channelName.innerText = "Tchat " + channel_name;
+			socket.emit('channel_change', channel);
+		}
+
+		socket.on('channel_changed', data => {
+			messageList.innerHTML = "";
+
+			data.forEach(element => {
+				addMessage(element);
+			});
+
+			nbMessage.innerText = data.length;
+
+			messageList.scrollTop = messageList.scrollHeight;
+		});
+
+		socket.on('private_message', message => {
+			if (channel == message.sender || client_uuid == message.sender) {
+				addMessage(message);
+				nbMessage.innerText = parseInt(nbMessage.innerText) + 1;
+			}
+			else {
+				document.getElementById(message.sender).classList.add('bg-red-100');
+			}
+			messageList.scrollTop = messageList.scrollHeight;
+		});
+
+		socket.on('init', data => {
+			data.forEach(element => {
+				addMessage(element);
+			});
+			nbMessage.innerText = data.length;
+			messageList.scrollTop = messageList.scrollHeight;
+		});
+
+		socket.on('message', message => {
+			if (channel == message.sender || client_uuid == message.sender) {
+				addMessage(message);
+				nbMessage.innerText = parseInt(nbMessage.innerText) + 1;
+				messageList.scrollTop = messageList.scrollHeight;
+			}
+		});
+
+		function addMessage(data) {
+			var div1 = document.createElement('div');
+			div1.classList = "chat-message";
+
+			var div2 = document.createElement('div');
+			div2.classList = "flex flex-col";
+
+			var span1 = document.createElement('span');
+			if (client_uuid == data.sender) {
+				span1.classList = "mx-2 ml-auto mb-2 text-gray-600 text-xs";
+			}
+			else {
+				span1.classList = "mx-2 mr-auto mb-2 text-gray-600 text-xs";
+			}
+			span1.innerText = data.username;
+
+			var div3 = document.createElement('div');
+			if (client_uuid == data.sender) {
+				div3.classList = "flex flex-col ml-auto space-y-2 text-xs mx-2 order-2 items-start  bg-blue-600 text-white px-4 py-2 rounded-bl-lg rounded-tr-lg rounded-tl-lg";
+			}
+			else {
+				div3.classList = "flex flex-col mr-auto space-y-2 text-xs mx-2 order-2 items-start bg-gray-300 text-gray-600 px-4 py-2 rounded-tr-lg rounded-tl-lg rounded-br-lg";
+			}
+			div3.style = "overflow-wrap: anywhere;";
+			div3.innerText = data.message;
+
+			div2.appendChild(span1);
+			div2.appendChild(div3);
+
+			div1.appendChild(div2);
+
+			messageList.appendChild(div1);
+		}
+
+		///
+
+		function makeid(length) {
+			var result = '';
+			var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			var charactersLength = characters.length;
+			for (var i = 0; i < length; i++) {
+				result += characters.charAt(Math.floor(Math.random() *
+					charactersLength));
+			}
+			return result;
+		}
+
+		socket.on('disconnected', (e) => {
+			tchatPage.classList.add('hidden');
+			connectionPage.classList.remove('hidden');
+		});
+
+
+		function leave() {
+			socket.emit('logout');
+		}
+
+		var openedMenu = false;
+		function menu() {
+			openedMenu = !openedMenu;
+
+			if (!openedMenu) {
+				users.classList.remove('left-0');
+				users.classList.add('left-full');
+			}
+			else {
+				users.classList.add('left-0');
+				users.classList.remove('left-full');
+			}
+		}
+	</script>
 </body>
 
 </html>
