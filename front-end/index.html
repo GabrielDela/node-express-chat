@@ -259,7 +259,6 @@
 		function changeChannel(p_channel, p_channel_name) {
 
 			if (openedMenu) {
-				console.log('tstees')
 				openedMenu = !openedMenu;
 				users.classList.remove('left-0');
 				users.classList.add('left-full');
@@ -287,7 +286,7 @@
 		});
 
 		socket.on('private_message', message => {
-			if (channel == message.sender || client_uuid == message.sender) {
+			if (client_uuid == message.sender) {
 				addMessage(message);
 				countMessage++;
 				nbMessage.innerText = "(" + countMessage + " messages)";
@@ -312,7 +311,7 @@
 		});
 
 		socket.on('message', message => {
-			if (channel == message.sender || client_uuid == message.sender) {
+			if (channel == message.receiver) {
 				addMessage(message);
 				countMessage++;
 				nbMessage.innerText = "(" + countMessage + " messages)";

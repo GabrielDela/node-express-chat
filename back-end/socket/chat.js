@@ -75,10 +75,12 @@ module.exports = function (io) {
         if (err) return console.error(err);
 
         if (user != null) {
+          console.log('private')
           socket.emit('private_message', message);
           io.to(user.id).emit('private_message', message);
         }
         else {
+          console.log('public')
           io.to('Global').emit('message', message);
         }
       });
