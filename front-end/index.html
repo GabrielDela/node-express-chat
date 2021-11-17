@@ -286,7 +286,7 @@
 		});
 
 		socket.on('private_message', message => {
-			if (client_uuid == message.sender) {
+			if ((client_uuid == message.sender || client_uuid == message.receiver) && (channel == message.receiver || channel == message.sender)) {
 				addMessage(message);
 				countMessage++;
 				nbMessage.innerText = "(" + countMessage + " messages)";
